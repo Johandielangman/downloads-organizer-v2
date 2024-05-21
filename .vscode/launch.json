@@ -10,6 +10,16 @@
             "request": "launch",
             "program": "main.py",
             "console": "integratedTerminal"
+        },
+        {
+            "name": "Run Non Interactive",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "main.py",
+            "args": [
+                "--run-non-interactive"
+            ],
+            "console": "integratedTerminal"
         }
     ]
 }

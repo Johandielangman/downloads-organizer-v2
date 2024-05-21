@@ -10,6 +10,6 @@ pip3 install -U pyinstaller
 
 ```bash
 
-python3 -m PyInstaller main.py --onefile --icon="s_a_logo.ico" --name="Downloads Organizer"
+python -m PyInstaller main.py --onefile --icon="s_a_logo.ico" --name="Downloads Organizer"
 
 ```

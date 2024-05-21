@@ -1,10 +1,13 @@
 from openpyxl import Workbook, load_workbook
 from openpyxl.worksheet.table import Table, TableStyleInfo
 
+import argparse
+import time
 import os
 from constants import (
     EXCEL_FILE_NAME,
-    DOWNLOAD_FOLDERS
+    DOWNLOAD_FOLDERS,
+    EXCEL_SHEET_NAME
 )
 
 
@@ -16,7 +19,7 @@ class ConfigBuilder:
     def new_workbook(self) -> Workbook:
         wb = Workbook()
         ws = wb.active
-        ws.title = "Config"
+        ws.title = EXCEL_SHEET_NAME
         return wb
 
     def add_config_header(self, ws: Workbook) -> None:
@@ -35,7 +38,7 @@ class ConfigBuilder:
 
     def create_table(self, ws: Workbook) -> None:
         ref = self.get_ref_table(ws)
-        tab = Table(displayName="ConfigTable", ref=ref)
+        tab = Table(displayName=f"{EXCEL_SHEET_NAME}Table", ref=ref)
         style = TableStyleInfo(
             name="TableStyleMedium9",
             showFirstColumn=False,
@@ -61,41 +64,72 @@ class ConfigBuilder:
 
 
 class Config(ConfigBuilder):
-    def __init__(self) -> None:
+    def __init__(self, args: argparse.Namespace) -> None:
         super().__init__()
+        self.config: dict = {}
+        self.args: argparse.Namespace = args
 
     def does_config_file_exist(self) -> bool:
         return os.path.exists(os.path.join(os.getcwd(), EXCEL_FILE_NAME))
 
-    def get_config(self) -> dict:
-        config = {}
+    def fetch_config(self) -> dict:
         if not self.does_config_file_exist():
-            response: str = input("Config file does not exist. Do you want to create it? (y/n): ")
+            response: str = "y"
+
+            if not self.args.run_non_interactive:
+                response: str = input(f"Config file '{EXCEL_FILE_NAME}' does not exist. Do you want to create it? (y/n): ")
+
             if response.lower() == "y":
+                print("Creating the Excel file for you with some default configurations...")
                 self.create_config_file()
-                return DOWNLOAD_FOLDERS
+
+                if not self.args.run_non_interactive:
+                    input(f"Hooray! I've created a file called '{EXCEL_FILE_NAME}' for you! Please review it and run the program again. Press enter to exit...")
+                exit()
             else:
+                print("Awhh, okay! I'll exit now. Goodbye!")
+                print(":'(")
+                time.sleep(2)
                 exit()
         else:
             print(f"Found the '{EXCEL_FILE_NAME}' file. Reading config...")
-            self.read_config_file(config)
-        return config
+            self.read_config_file()
+        return self.config
 
-    def clean_config_file(self, config: dict) -> None:
-        for folder_name, extensions in config.items():
+    def clean_config_file(self) -> None:
+        for folder_name, extensions in self.config.items():
             extensions = [ext.lower() for ext in extensions]
-            config[folder_name] = list(set(extensions))
+            self.config[folder_name] = list(set(extensions))
 
-    def read_config_file(self, config: dict) -> dict:
+    def read_config_file(self) -> dict:
         wb = load_workbook(EXCEL_FILE_NAME)
-        ws = wb["Config"]
+        try:
+            ws = wb[EXCEL_SHEET_NAME]
+        except KeyError:
+            print(f"Something went wrong! The '{EXCEL_SHEET_NAME}' sheet is missing. Please check the Excel file and try again.")
+
+            if not self.args.run_non_interactive:
+                input("Press enter to exit...")
+            exit()
 
         for row in ws.iter_rows(min_row=2, values_only=True):
             folder_name, extension = row
-            if folder_name not in config:
-                config[folder_name] = [extension]
+            if folder_name not in self.config:
+                self.config[folder_name] = [extension]
             else:
-                config[folder_name].append(extension)
+                self.config[folder_name].append(extension)
 
-        self.clean_config_file(config)
-        return config
+        self.clean_config_file()
+        return self.config
+
+    def summarize_config(self) -> None:
+        # Print a table where the first column is the folder name and the second is the number of extensions
+        print("\nConfig Summary:")
+        print(f"{'Folder Name':<20} | {'Number of Extensions':<20}")
+        print("-" * 40)
+        for folder_name, extensions in self.config.items():
+            print(f"{folder_name:<20} | {len(extensions):<25}")
+        print("\n")
+
+        if not self.args.run_non_interactive:
+            input("Press enter to continue...")

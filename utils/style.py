@@ -1,10 +1,16 @@
 import random
+import argparse
 
 
 class Banner:
-    def __init__(self):
-        self.genders = ["His", "Her"]  # lol, should always be a list of these two
-        self.animal_names = [
+    def __init__(self, args: argparse.Namespace) -> None:
+        self.args: argparse.Namespace = args
+        self.genders: list = [
+            "His",
+            "Her"
+        ]  # lol, should always be a list of these two
+
+        self.animal_names: list = [
             "Simba",
             "Mufasa",
             "Baloo",
@@ -15,7 +21,7 @@ class Banner:
             "Nemo",
             "Marlin",
             "Pumbaa",
-            "Bagheera",
+            "Barrera",
             "Kovu",
             "Shere Khan",
             "Tigger",
@@ -27,21 +33,21 @@ class Banner:
             "Flounder"
         ]
 
-    def print_name(self):
+    def print_animal_name(self) -> None:
         print(f"{random.choice(self.genders)} name is {random.choice(self.animal_names)} :) \n")
 
-    def home(self):
+    def print_home(self) -> None:
         print(r"""
-    ____                      __                __        ____                         _                
+    ____                      __                __        ____                         _
    / __ \____ _      ______  / /___  ____ _____/ /____   / __ \_________ _____ _____  (_)___  ___  _____
   / / / / __ \ | /| / / __ \/ / __ \/ __ `/ __  / ___/  / / / / ___/ __ `/ __ `/ __ \/ /_  / / _ \/ ___/
- / /_/ / /_/ / |/ |/ / / / / / /_/ / /_/ / /_/ (__  )  / /_/ / /  / /_/ / /_/ / / / / / / /_/  __/ /    
-/_____/\____/|__/|__/_/ /_/_/\____/\__,_/\__,_/____/   \____/_/   \__, /\__,_/_/ /_/_/ /___/\___/_/     
-                                                                 /____/                                 
-    """)
-        print("\n")
+ / /_/ / /_/ / |/ |/ / / / / / /_/ / /_/ / /_/ (__  )  / /_/ / /  / /_/ / /_/ / / / / / / /_/  __/ /
+/_____/\____/|__/|__/_/ /_/_/\____/\__,_/\__,_/____/   \____/_/   \__, /\__,_/_/ /_/_/ /___/\___/_/
+                                                                 /____/
 
-    def rabbit(self):
+        """)
+
+    def print_rabbit(self) -> None:
         print("To say thanks, here's a rabbit for you!")
         print(r"""
              ,\
@@ -52,11 +58,11 @@ class Banner:
     ,_/   ,    \/\_
     \_|    )_-\ \_-`
       `-----` `--`
-        """)
-        print("\n")
-        self.print_name()
 
-    def horse(self):
+        """)
+        self.print_animal_name()
+
+    def print_horse(self) -> None:
         print("To say thanks, here's a horse for you!")
         print(r"""
             .''
@@ -65,11 +71,11 @@ class Banner:
 '/ )\ ).__. ) 
 ' <' `\ ._/'\
    `   \     \
-       """)
-        print("\n")
-        self.print_name()
 
-    def dog(self):
+        """)
+        self.print_animal_name()
+
+    def print_dog(self) -> None:
         print("To say thanks, here's a dog for you!")
         print(r"""
   __      _
@@ -77,20 +83,19 @@ o'')}____//
  `_/      )
  (_(_/-(_/
         """)
-        print("\n")
-        self.print_name()
+        self.print_animal_name()
 
-    def cat(self):
+    def print_cat(self):
         print("To say thanks, here's a cat for you!")
         print(r"""
  /\_/\
 ( o.o )
  > ^ <
-        """)
-        print("\n")
-        self.print_name()
 
-    def elephant(self):
+        """)
+        self.print_animal_name()
+
+    def print_elephant(self) -> None:
         print("To say thanks, here's a elephant for you!")
         print(r"""
      _.-- ,.--.
@@ -105,36 +110,37 @@ o'')}____//
     "       |   /  \  |  \    )
             |   |./'  :__ \.-'
             '--'
-        """)
-        print("\n")
 
-    def dolphin(self):
+        """)
+        self.print_animal_name()
+
+    def print_dolphin(self) -> None:
         print("To say thanks, here's a dolphin for you!")
         print(r"""
-                ;'-. 
+                ;'-.
     `;-._        )  '---.._
       >  `-.__.-'          `'.__
      /_.-'-._         _,   ^ ---)
      `       `'------/_.'----```
                      `
+
         """)
-        print("\n")
-        self.print_name()
+        self.print_animal_name()
 
     def random_animal(self):
         random_int = random.randint(0, 5)
         match random_int:
             case 0:
-                self.rabbit()
+                self.print_rabbit()
             case 1:
-                self.horse()
+                self.print_horse()
             case 2:
-                self.dog()
+                self.print_dog()
             case 3:
-                self.cat()
+                self.print_cat()
             case 4:
-                self.elephant()
+                self.print_elephant()
             case 5:
-                self.dolphin()
+                self.print_dolphin()
             case _:
                 print("No animal for you!")

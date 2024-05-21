@@ -1,23 +1,32 @@
 import os
 import shutil
 import time
+import argparse
 from progress.bar import Bar
 from constants import (
     UNCATOGORIZED_FOLDER,
-    OTHER_DOWNLOADS_FOLDER,
+    OTHER_DOWNLOADS_FOLDER
 )
 
 
 class DownloadsOrganizer:
-    def __init__(self, downloads_path: str, config: dict) -> None:
+    def __init__(
+        self,
+        downloads_path: str,
+        config: dict,
+        args: argparse.Namespace
+    ) -> None:
         self.downloads_path = downloads_path
         self.downloads_config = config
-        self.num_files = 0
+        self.args: argparse.Namespace = args
+        self.num_files: int = 0
 
     def change_to_downloads_folder(self) -> None:
         os.chdir(self.downloads_path)
         n_files = len(os.listdir())
-        input(f"Your downloads folder is: '{self.downloads_path}'. There are {n_files} file(s)/folder(s) to look at! Press enter to continue sorting here...\n")
+
+        if not self.args.run_non_interactive:
+            input(f"Your downloads folder is: '{self.downloads_path}'. There are {n_files} file(s)/folder(s) to look at! Press enter to continue sorting here...\n")
 
     def get_files_in_folder(self) -> tuple[list, int]:
         all_files = os.listdir()
@@ -69,16 +78,16 @@ class DownloadsOrganizer:
                 new_file_path = os.path.join(self.downloads_path, UNCATOGORIZED_FOLDER, file)
                 self.move_without_overwrite(current_file_path, new_file_path)
         else:
+            self.create_folder_if_not_exists(OTHER_DOWNLOADS_FOLDER)
             new_file_path = os.path.join(self.downloads_path, OTHER_DOWNLOADS_FOLDER, file)
+            current_file_path = os.path.join(self.downloads_path, file)
 
             # Don't move folders that are keys of the self.downloads_config dictionary or OTHER_DOWNLOADS_FOLDER
             if (
                 file not in self.downloads_config.keys() and
                 file != OTHER_DOWNLOADS_FOLDER
             ):
-                other_files = os.listdir(os.path.join(self.downloads_path, OTHER_DOWNLOADS_FOLDER))
-                if file not in other_files:
-                    shutil.move(file, new_file_path)
+                self.move_without_overwrite(current_file_path, new_file_path)
 
     def organize_files(self) -> None:
         self.change_to_downloads_folder()
@@ -86,5 +95,6 @@ class DownloadsOrganizer:
         with Bar('Processing', max=num_files) as bar:
             for file in all_files:
                 self.organize_file(file)
-                time.sleep(0.1)
+                if not self.args.run_non_interactive:
+                    time.sleep(0.1)
                 bar.next()
