@@ -1,13 +1,18 @@
 import random
 import argparse
+from colorama import (
+    Fore,
+    Back,
+    Style
+)
 
 
 class Banner:
     def __init__(self, args: argparse.Namespace) -> None:
         self.args: argparse.Namespace = args
         self.genders: list = [
-            "His",
-            "Her"
+            f"{Fore.BLUE}His{Style.RESET_ALL}",
+            f"{Fore.MAGENTA}Her{Style.RESET_ALL}"
         ]  # lol, should always be a list of these two
 
         self.animal_names: list = [
@@ -37,7 +42,7 @@ class Banner:
         print(f"{random.choice(self.genders)} name is {random.choice(self.animal_names)} :) \n")
 
     def print_home(self) -> None:
-        print(r"""
+        print(Fore.MAGENTA + r"""
     ____                      __                __        ____                         _
    / __ \____ _      ______  / /___  ____ _____/ /____   / __ \_________ _____ _____  (_)___  ___  _____
   / / / / __ \ | /| / / __ \/ / __ \/ __ `/ __  / ___/  / / / / ___/ __ `/ __ `/ __ \/ /_  / / _ \/ ___/
@@ -49,7 +54,7 @@ class Banner:
 
     def print_rabbit(self) -> None:
         print("To say thanks, here's a rabbit for you!")
-        print(r"""
+        print(Fore.MAGENTA + r"""
              ,\
              \\\,_
               \` ,\
@@ -64,7 +69,7 @@ class Banner:
 
     def print_horse(self) -> None:
         print("To say thanks, here's a horse for you!")
-        print(r"""
+        print(Fore.MAGENTA + r"""
             .''
   ._.-.___.' (`\
  //(        ( `'
@@ -77,7 +82,7 @@ class Banner:
 
     def print_dog(self) -> None:
         print("To say thanks, here's a dog for you!")
-        print(r"""
+        print(Fore.MAGENTA + r"""
   __      _
 o'')}____//
  `_/      )
@@ -87,7 +92,7 @@ o'')}____//
 
     def print_cat(self):
         print("To say thanks, here's a cat for you!")
-        print(r"""
+        print(Fore.MAGENTA + r"""
  /\_/\
 ( o.o )
  > ^ <
@@ -97,7 +102,7 @@ o'')}____//
 
     def print_elephant(self) -> None:
         print("To say thanks, here's a elephant for you!")
-        print(r"""
+        print(Fore.MAGENTA + r"""
      _.-- ,.--.
    .'   .'    /
    | @       |'..--------._
@@ -116,7 +121,7 @@ o'')}____//
 
     def print_dolphin(self) -> None:
         print("To say thanks, here's a dolphin for you!")
-        print(r"""
+        print(Fore.MAGENTA + r"""
                 ;'-.
     `;-._        )  '---.._
       >  `-.__.-'          `'.__

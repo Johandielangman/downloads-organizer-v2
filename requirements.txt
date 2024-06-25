@@ -7,3 +7,4 @@ progress==1.6
 pyinstaller==6.6.0
 pyinstaller-hooks-contrib==2024.6
 pywin32-ctypes==0.2.2
+colorama==0.4.6

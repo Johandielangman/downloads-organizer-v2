@@ -7,6 +7,11 @@ from constants import (
     UNCATOGORIZED_FOLDER,
     OTHER_DOWNLOADS_FOLDER
 )
+from colorama import (
+    Fore,
+    Back,
+    Style
+)
 
 
 class DownloadsOrganizer:
@@ -26,7 +31,11 @@ class DownloadsOrganizer:
         n_files = len(os.listdir())
 
         if not self.args.run_non_interactive:
-            input(f"Your downloads folder is: '{self.downloads_path}'. There are {n_files} file(s)/folder(s) to look at! Press enter to continue sorting here...\n")
+            input(
+                f"\n{Style.RESET_ALL}Your downloads folder is: {Fore.GREEN}'{self.downloads_path}'{Style.RESET_ALL}. \n"
+                f"There are {Fore.GREEN}{n_files}{Style.RESET_ALL} file(s)/folder(s) to look at!\n"
+                f"{Fore.GREEN}Press enter to continue sorting here...{Style.RESET_ALL}\n"
+            )
 
     def get_files_in_folder(self) -> tuple[list, int]:
         all_files = os.listdir()

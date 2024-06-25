@@ -1,5 +1,10 @@
 from openpyxl import Workbook, load_workbook
 from openpyxl.worksheet.table import Table, TableStyleInfo
+from colorama import (
+    Fore,
+    Back,
+    Style
+)
 
 import argparse
 import time
@@ -77,22 +82,31 @@ class Config(ConfigBuilder):
             response: str = "y"
 
             if not self.args.run_non_interactive:
-                response: str = input(f"Config file '{EXCEL_FILE_NAME}' does not exist. Do you want to create it? (y/n): ")
+                response: str = input(
+                    f"{Fore.YELLOW }I see you don't have a configuration file yet. \n"
+                    f"{Style.RESET_ALL}It will be an Excel file called {Fore.GREEN}'{EXCEL_FILE_NAME}'{Style.RESET_ALL}. \n"
+                    "This is where you can specify the folders and extensions you want to organize. \n"
+                    f"Do you want to create it? {Fore.GREEN}(y/n): "
+                )
 
             if response.lower() == "y":
-                print("Creating the Excel file for you with some default configurations...")
+                print("\nCreating the Excel file for you with some default configurations...\n")
                 self.create_config_file()
 
                 if not self.args.run_non_interactive:
-                    input(f"Hooray! I've created a file called '{EXCEL_FILE_NAME}' for you! Please review it and run the program again. Press enter to exit...")
+                    input(
+                        f"\n{Fore.GREEN}Hooray!{Style.RESET_ALL} I've created a file called {Fore.GREEN}'{EXCEL_FILE_NAME}'{Style.RESET_ALL} for you! I placed it in the same directory as this script. \n"
+                        "Please take some time to review the file. I've added some defaults for you. \n"
+                        f"{Fore.GREEN}Press enter to exit the program...\n"
+                    )
                 exit()
             else:
-                print("Awhh, okay! I'll exit now. Goodbye!")
+                print(f"{Fore.RED}Awhh, okay! You didn't say 'y' for yes. I'll exit now. Goodbye!")
                 print(":'(")
                 time.sleep(2)
                 exit()
         else:
-            print(f"Found the '{EXCEL_FILE_NAME}' file. Reading config...")
+            print(f"{Style.RESET_ALL}Found the {Fore.GREEN}'{EXCEL_FILE_NAME}'{Style.RESET_ALL} file. Reading config...")
             self.read_config_file()
         return self.config
 
@@ -106,10 +120,10 @@ class Config(ConfigBuilder):
         try:
             ws = wb[EXCEL_SHEET_NAME]
         except KeyError:
-            print(f"Something went wrong! The '{EXCEL_SHEET_NAME}' sheet is missing. Please check the Excel file and try again.")
+            print(f"{Fore.RED}Something went wrong! The '{EXCEL_SHEET_NAME}' sheet is missing. Please check the Excel file and try again.")
 
             if not self.args.run_non_interactive:
-                input("Press enter to exit...")
+                input(f"{Fore.GREEN}Press enter to exit...")
             exit()
 
         for row in ws.iter_rows(min_row=2, values_only=True):
@@ -124,7 +138,7 @@ class Config(ConfigBuilder):
 
     def summarize_config(self) -> None:
         # Print a table where the first column is the folder name and the second is the number of extensions
-        print("\nConfig Summary:")
+        print("\nHere is a summary fo you of all the file extensions I found!")
         print(f"{'Folder Name':<20} | {'Number of Extensions':<20}")
         print("-" * 40)
         for folder_name, extensions in self.config.items():
@@ -132,4 +146,4 @@ class Config(ConfigBuilder):
         print("\n")
 
         if not self.args.run_non_interactive:
-            input("Press enter to continue...")
+            input(f"{Fore.GREEN}Press enter to continue...")
